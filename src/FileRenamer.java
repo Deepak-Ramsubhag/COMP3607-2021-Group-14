@@ -42,7 +42,9 @@ public class FileRenamer {
                     if (flag == false)
                         System.out.println("Error renaming " + str);
 
-                    System.out.println(str + "\n\nRenamed to:\n\n" + newFileName + "\n\n");
+                    else
+                        System.out.println(str + "\n\nRenamed to:\n\n" + newFileName + "\n\n");
+
                     printDashes(60);
 
                     iterator.reset();
