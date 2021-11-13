@@ -13,7 +13,9 @@ public class FileRenamer {
         iterator = studentDataCollection.createIterator();
     }
 
-    public void renameFiles() {
+    public int renameFiles() {
+
+        int count = 0;
 
         ArrayList<String> fileNames = getFileNames();
 
@@ -24,7 +26,11 @@ public class FileRenamer {
             while (iterator.hasNext()) {
 
                 StudentData student = (StudentData) iterator.next();
+
                 String fullName = student.getFullName();
+
+                System.out.println(getFullNameFromPDF(str));
+                System.out.println(fullName);
 
                 if (getFullNameFromPDF(str).equals(fullName)) {
 
@@ -42,17 +48,17 @@ public class FileRenamer {
                     if (flag == false)
                         System.out.println("Error renaming " + str);
 
-                    else
-                        System.out.println(str + "\n\nRenamed to:\n\n" + newFileName + "\n\n");
-
-                    printDashes(60);
+                    else {
+                        System.out.println(str + " Renamed to: " + newFileName + "\n");
+                        count++;
+                    }
 
                     iterator.reset();
                     break;
-
                 }
             }
         }
+        return count;
     }
 
     private ArrayList<String> getFileNames() {
@@ -112,13 +118,6 @@ public class FileRenamer {
         }
 
         return originalFileName;
-    }
-
-    private void printDashes(int n) {
-
-        for (int i = 0; i < n; i++)
-            System.out.print("-");
-        System.out.println("\n\n");
     }
 
 }

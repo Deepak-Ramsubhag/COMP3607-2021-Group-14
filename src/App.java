@@ -1,11 +1,9 @@
 import java.io.File;
 import java.nio.file.*;
+import java.util.ArrayList;
 
 public class App {
     public static void main(String[] args) throws Exception {
-
-        StudentDataGenerator sdg = new StudentDataGenerator();
-        sdg.generateList();
 
         Path currentActiveDirectory = Paths.get("").toAbsolutePath();
 
@@ -17,21 +15,20 @@ public class App {
 
         String destination = source + "/renamedFiles";
 
+        CSVReader csvReader = new CSVReader(source);
+        csvReader.readCSV();
+
+        FolderHandler folderHandler = new FolderHandler(source, destination);
+
         FileCopier fileCopier = new FileCopier(source, destination);
 
-        // File folderChecker = new File(destination);
+        FileRenamer fileRenamer = new FileRenamer(destination, csvReader.getStudentData());
 
-        // if (folderChecker.length() > 0) {
-        // System.out.println(folderChecker.length());
-        // System.out.println("renamedFiles folder is not empty.");
-        // return;
+        System.out.println(fileRenamer.renameFiles() + " files renamed.");
 
-        // } else
-        fileCopier.copyFiles();
+        // folderHandler.checkEmptyFolder(source);
 
-        FileRenamer fileRenamer = new FileRenamer(destination, sdg.getStudentData());
-
-        fileRenamer.renameFiles();
+        // folderHandler.createDestinationFolder();
 
         System.out.println("Done");
 
