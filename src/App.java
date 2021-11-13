@@ -1,6 +1,4 @@
-import java.io.File;
 import java.nio.file.*;
-import java.util.ArrayList;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -24,13 +22,21 @@ public class App {
 
         FileRenamer fileRenamer = new FileRenamer(destination, csvReader.getStudentData());
 
-        System.out.println(fileRenamer.renameFiles() + " files renamed.");
+        if (folderHandler.checkEmptyFolder(source))
+            return;
 
-        // folderHandler.checkEmptyFolder(source);
+        else {
+            if (!folderHandler.createDestinationFolder())
+                return;
 
-        // folderHandler.createDestinationFolder();
+            else {
+                fileCopier.copyFiles();
+                System.out.println(fileRenamer.renameFiles() + " files renamed.");
+            }
+        }
 
-        System.out.println("Done");
+        System.out.println("Done. . .");
+        return;
 
     }
 }

@@ -17,7 +17,7 @@ public class CSVReader {
 
         try {
 
-            FileReader csvFile = new FileReader(source + "/Sample 1 CSV.csv");
+            FileReader csvFile = new FileReader(source + "/Sample 3 CSV.csv");
             Scanner scanner = new Scanner(csvFile);
             scanner.useDelimiter(",");
 
@@ -27,7 +27,9 @@ public class CSVReader {
 
                 StudentData student = new StudentData();
 
-                student.setIdentifier(scanner.next());
+                String identifier = scanner.next();
+                identifier = identifier.substring(12);
+                student.setIdentifier(identifier);
                 student.setFullName(scanner.next());
                 student.setIDNumber(scanner.next());
                 student.setEmail(scanner.next());

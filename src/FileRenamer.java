@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 public class FileRenamer {
@@ -19,37 +20,38 @@ public class FileRenamer {
 
         ArrayList<String> fileNames = getFileNames();
 
-        for (String str : fileNames) {
+        for (String originalFileName : fileNames) {
 
-            File fileToRename = new File(destination + "/" + str);
+            File fileToRename = new File(destination + "/" + originalFileName);
 
             while (iterator.hasNext()) {
 
                 StudentData student = (StudentData) iterator.next();
 
-                String fullName = student.getFullName();
+                if (needsNameChange(originalFileName, student)) {
+                    System.out.println(originalFileName + " does not need renaming.\n");
+                    iterator.reset();
+                    break;
+                }
 
-                System.out.println(getFullNameFromPDF(str));
-                System.out.println(fullName);
-
-                if (getFullNameFromPDF(str).equals(fullName)) {
+                if (verifyFileNameType(originalFileName, student) == 1) {
 
                     String newFileName = "";
-                    newFileName += fullName + "_";
+                    newFileName += student.getFullName() + "_";
                     newFileName += student.getIdentifier() + "_";
                     newFileName += "assignsubmission_file_";
-                    newFileName += getOriginalFileNameFromPDF(str);
-                    newFileName += ".pdf";
+                    String originalSubmissionName = getOriginalSubmissionName(originalFileName, student);
+                    newFileName += originalSubmissionName;
 
                     File renameFile = new File(destination + "/" + newFileName);
 
                     boolean flag = fileToRename.renameTo(renameFile);
 
                     if (flag == false)
-                        System.out.println("Error renaming " + str);
+                        System.out.println("Error renaming " + originalFileName);
 
                     else {
-                        System.out.println(str + " Renamed to: " + newFileName + "\n");
+                        System.out.println(originalFileName + " Renamed to: " + newFileName + "\n");
                         count++;
                     }
 
@@ -59,6 +61,7 @@ public class FileRenamer {
             }
         }
         return count;
+
     }
 
     private ArrayList<String> getFileNames() {
@@ -83,9 +86,36 @@ public class FileRenamer {
         return fileNames;
     }
 
-    private String getFullNameFromPDF(String str) {
+    private boolean needsNameChange(String fileName, StudentData studentData) {
 
-        String fileNameParts[] = str.split("_");
+        String[] fileNameParts = fileName.split("_");
+
+        if (!fileNameParts[0].equals(studentData.getFullName()))
+            return false;
+
+        if (!fileNameParts[1].equals(studentData.getIdentifier()))
+            return false;
+
+        if (!fileNameParts[2].equals("assignsubmission") || !fileNameParts[3].equals("file"))
+            return false;
+
+        return true;
+    }
+
+    private int verifyFileNameType(String fileName, StudentData student) {
+
+        String fullName = getFullNameFromFileName(fileName);
+
+        if (fullName.equals(student.getFullName()) && (fileName.contains(student.getIdentifier())))
+            return 1;
+
+        else
+            return 2;
+    }
+
+    private String getFullNameFromFileName(String fileName) {
+
+        String fileNameParts[] = fileName.split("_");
         String fullName = "";
         int i = 1;
 
@@ -100,24 +130,27 @@ public class FileRenamer {
         return fullName;
     }
 
-    private String getOriginalFileNameFromPDF(String str) {
+    private String getOriginalSubmissionName(String fileName, StudentData student) {
 
-        String fileNameParts[] = str.split("_");
-        String originalFileName = "";
-        int i = 1;
+        String fileNameParts[] = fileName.split("_");
+        String originalSubmission = "";
+        int i;
         int arraySize = fileNameParts.length;
 
-        while (fileNameParts[i].matches(".*[a-z].*"))
-            i++;
-
-        while (i + 2 < arraySize) {
-            originalFileName += fileNameParts[i];
-            i++;
-            if (i + 2 != arraySize)
-                originalFileName += "_";
+        for (i = 0; i < arraySize; i++) {
+            if (fileNameParts[i].equals(student.getIdentifier())) {
+                i++;
+                while (i < arraySize) {
+                    originalSubmission += fileNameParts[i];
+                    i++;
+                    if (i != arraySize)
+                        originalSubmission += "_";
+                }
+                return originalSubmission;
+            }
         }
 
-        return originalFileName;
+        return "No submission name";
     }
 
 }

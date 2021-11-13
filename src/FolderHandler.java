@@ -17,10 +17,10 @@ public class FolderHandler {
         if (directory.isDirectory()) {
             String[] files = directory.list();
             if (files.length > 0) {
-                System.out.println("Source folder is not empty");
+                System.out.println("Source folder is not empty.");
                 return false;
             } else {
-                System.out.println("Source folder is empty");
+                System.out.println("Source folder is empty.");
                 return true;
             }
         }
