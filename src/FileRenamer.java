@@ -1,6 +1,6 @@
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class FileRenamer {
 
@@ -22,45 +22,100 @@ public class FileRenamer {
 
         for (String originalFileName : fileNames) {
 
-            File fileToRename = new File(destination + "/" + originalFileName);
+            boolean renamed = false;
 
-            while (iterator.hasNext()) {
+            if (originalFileName.contains(".pdf")) {
+                File fileToRename = new File(destination + "/" + originalFileName);
 
-                StudentData student = (StudentData) iterator.next();
+                while (iterator.hasNext()) {
 
-                if (needsNameChange(originalFileName, student)) {
-                    System.out.println(originalFileName + " does not need renaming.\n");
-                    iterator.reset();
-                    break;
-                }
+                    StudentData student = (StudentData) iterator.next();
 
-                if (verifyFileNameType(originalFileName, student) == 1) {
+                    String identifer = student.getIdentifier();
+                    String IDnumber = student.getIDNumber();
 
-                    String newFileName = "";
-                    newFileName += student.getFullName() + "_";
-                    newFileName += student.getIdentifier() + "_";
-                    newFileName += "assignsubmission_file_";
-                    String originalSubmissionName = getOriginalSubmissionName(originalFileName, student);
-                    newFileName += originalSubmissionName;
+                    boolean nameCheck = checkFileForFullName(originalFileName, student);
 
-                    File renameFile = new File(destination + "/" + newFileName);
+                    if (nameCheck || originalFileName.contains(identifer) || originalFileName.contains(IDnumber)) {
 
-                    boolean flag = fileToRename.renameTo(renameFile);
+                        if (!needsNameChange(originalFileName, student)) {
+                            System.out.println(originalFileName + " does not need renaming.\n");
+                            iterator.reset();
+                            renamed = true;
+                            break;
+                        }
 
-                    if (flag == false)
-                        System.out.println("Error renaming " + originalFileName);
+                        String fileType = verifyFileNameType(originalFileName, student);
 
-                    else {
-                        System.out.println(originalFileName + " Renamed to: " + newFileName + "\n");
-                        count++;
+                        String newFileName = "";
+
+                        if (fileType.equals("medium"))
+                            newFileName = renameFileMedium(originalFileName, student);
+
+                        else if (fileType.equals("hard"))
+                            newFileName = renameFileHard(originalFileName, student);
+
+                        File renameFile = new File(destination + "/" + newFileName);
+
+                        boolean flag = fileToRename.renameTo(renameFile);
+
+                        if (flag == false)
+                            renamed = false;
+
+                        else {
+                            System.out.println(originalFileName + " Renamed to: " + newFileName + "\n");
+                            renamed = true;
+                            count++;
+                        }
+
+                        iterator.reset();
+                        break;
                     }
 
-                    iterator.reset();
-                    break;
                 }
+                if (!renamed)
+                    System.out.println("Error renaming " + originalFileName + "\n");
             }
+            iterator.reset();
         }
         return count;
+    }
+
+    private boolean checkFileForFullName(String fileName, StudentData student) {
+
+        String temp1 = fileName;
+
+        temp1 = temp1.trim().replaceAll(" ", "");
+
+        String name = student.getFullName();
+
+        String temp2 = name.trim().replaceAll(" ", "");
+
+        boolean nameCheck = Pattern.compile(Pattern.quote(temp2), Pattern.CASE_INSENSITIVE).matcher(temp1).find();
+
+        return nameCheck;
+    }
+
+    private String renameFileHard(String fileName, StudentData student) {
+        String newFileName = "";
+        newFileName += student.getFullName() + "_";
+        newFileName += student.getIdentifier() + "_";
+        newFileName += "assignsubmission_file_";
+        newFileName += fileName;
+
+        return newFileName;
+
+    }
+
+    private String renameFileMedium(String fileName, StudentData student) {
+        String newFileName = "";
+        newFileName += student.getFullName() + "_";
+        newFileName += student.getIdentifier() + "_";
+        newFileName += "assignsubmission_file_";
+        String originalSubmissionName = getOriginalSubmissionName(fileName, student);
+        newFileName += originalSubmissionName;
+
+        return newFileName;
 
     }
 
@@ -91,43 +146,24 @@ public class FileRenamer {
         String[] fileNameParts = fileName.split("_");
 
         if (!fileNameParts[0].equals(studentData.getFullName()))
-            return false;
+            return true;
 
         if (!fileNameParts[1].equals(studentData.getIdentifier()))
-            return false;
+            return true;
 
         if (!fileNameParts[2].equals("assignsubmission") || !fileNameParts[3].equals("file"))
-            return false;
+            return true;
 
-        return true;
+        return false;
     }
 
-    private int verifyFileNameType(String fileName, StudentData student) {
+    private String verifyFileNameType(String fileName, StudentData student) {
 
-        String fullName = getFullNameFromFileName(fileName);
-
-        if (fullName.equals(student.getFullName()) && (fileName.contains(student.getIdentifier())))
-            return 1;
+        if ((fileName.contains(student.getIdentifier())))
+            return "medium";
 
         else
-            return 2;
-    }
-
-    private String getFullNameFromFileName(String fileName) {
-
-        String fileNameParts[] = fileName.split("_");
-        String fullName = "";
-        int i = 1;
-
-        while (fileNameParts[i].matches(".*[a-z].*")) {
-
-            if (fullName.equals(""))
-                fullName += fileNameParts[i];
-            else
-                fullName += " " + fileNameParts[i];
-            i++;
-        }
-        return fullName;
+            return "hard";
     }
 
     private String getOriginalSubmissionName(String fileName, StudentData student) {
@@ -149,7 +185,6 @@ public class FileRenamer {
                 return originalSubmission;
             }
         }
-
         return "No submission name";
     }
 

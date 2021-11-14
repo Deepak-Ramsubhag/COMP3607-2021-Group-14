@@ -17,16 +17,16 @@ public class FolderHandler {
         if (directory.isDirectory()) {
             String[] files = directory.list();
             if (files.length > 0) {
-                System.out.println("Source folder is not empty.");
+                System.out.println("Source folder is not empty.\n");
                 return false;
             } else {
-                System.out.println("Source folder is empty.");
+                System.out.println("Source folder is empty.\n");
                 return true;
             }
         }
 
         else {
-            System.out.println("Source directory is not valid.");
+            System.out.println("Source directory is not valid.\n");
             return true;
         }
     }
@@ -36,7 +36,7 @@ public class FolderHandler {
         File directory = new File(destination);
 
         if (directory.exists()) {
-            System.out.println("Destination folder already exists.");
+            System.out.println("Destination folder already exists.\n");
             return false;
         }
 
@@ -44,7 +44,7 @@ public class FolderHandler {
             boolean flag = directory.mkdir();
 
             if (flag) {
-                System.out.println("Destination folder successfully created.");
+                System.out.println("Destination folder successfully created.\n");
                 return true;
             }
 
