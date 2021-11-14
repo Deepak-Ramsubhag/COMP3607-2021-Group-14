@@ -34,9 +34,9 @@ public class FileRenamer {
                     String identifer = student.getIdentifier();
                     String IDnumber = student.getIDNumber();
 
-                    boolean nameCheck = checkFileForFullName(originalFileName, student);
+                    boolean containsName = checkFileForFullName(originalFileName, student);
 
-                    if (nameCheck || originalFileName.contains(identifer) || originalFileName.contains(IDnumber)) {
+                    if (containsName || originalFileName.contains(identifer) || originalFileName.contains(IDnumber)) {
 
                         if (!needsNameChange(originalFileName, student)) {
                             System.out.println(originalFileName + " does not need renaming.\n");
@@ -83,13 +83,11 @@ public class FileRenamer {
 
     private boolean checkFileForFullName(String fileName, StudentData student) {
 
-        String temp1 = fileName;
-
-        temp1 = temp1.trim().replaceAll(" ", "");
+        String temp1 = fileName.trim().replaceAll(" ", "");
 
         String name = student.getFullName();
-
         String temp2 = name.trim().replaceAll(" ", "");
+        temp2 = temp2.trim().replaceAll("_", "");
 
         boolean nameCheck = Pattern.compile(Pattern.quote(temp2), Pattern.CASE_INSENSITIVE).matcher(temp1).find();
 
