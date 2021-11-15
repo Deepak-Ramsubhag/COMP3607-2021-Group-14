@@ -22,6 +22,8 @@ public class App {
 
         FileRenamer fileRenamer = new FileRenamer(destination, csvReader.getStudentData());
 
+        MissingSubmissions missingSubmissions = new MissingSubmissions(destination, csvReader.getStudentData());
+
         if (folderHandler.checkEmptyFolder(source))
             return;
 
@@ -34,6 +36,10 @@ public class App {
                 System.out.println(fileRenamer.renameFiles() + " files renamed.");
             }
         }
+
+        int numMissingSubmissions = missingSubmissions.writeToCSV();
+
+        System.out.println("Number of missing submissions: " + numMissingSubmissions);
 
         return;
 
