@@ -11,6 +11,11 @@ public class StudentData {
     private String lastModified;
     private String feedback;
 
+    public StudentData(int ID, String Name){
+        setIDNumber(Integer.toString(ID));
+        setFullName(Name);
+    }
+
     public String getIdentifier() {
         return identifier;
     }

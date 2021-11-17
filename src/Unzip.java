@@ -7,12 +7,15 @@ import java.util.zip.ZipInputStream;
 
 
 public class Unzip {
+
     private String zippedFile;
     private String destDir;
 
     public Unzip( String zippedFile, String destDir){
         this.zippedFile = zippedFile;
         this.destDir = destDir;
+
+        unzip(zippedFile, destDir);
     }
 
     private static void unzip(String zipFilePath, String destDir) {
@@ -43,7 +46,7 @@ public class Unzip {
                 while ((len = inputStream.read(buffer)) > 0) {
                     fos.write(buffer, 0, len);
                 }
-                
+
                 fos.close();
                 inputStream.closeEntry();
                 zip = inputStream.getNextEntry();

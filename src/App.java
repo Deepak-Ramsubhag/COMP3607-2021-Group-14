@@ -32,7 +32,7 @@ public class App {
                 return;
 
             else {
-                fileCopier.copyFiles();
+                fileCopier.copier();
                 System.out.println(fileRenamer.renameFiles() + " files renamed.");
             }
         }
