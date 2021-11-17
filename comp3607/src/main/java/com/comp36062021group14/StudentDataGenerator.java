@@ -1,3 +1,4 @@
+package com.comp36062021group14;
 import java.util.ArrayList;
 
 public class StudentDataGenerator {
