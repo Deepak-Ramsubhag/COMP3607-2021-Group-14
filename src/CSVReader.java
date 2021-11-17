@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -5,19 +6,21 @@ import java.util.Scanner;
 
 public class CSVReader {
 
-    String source;
+    private String source;
     private ArrayList<StudentData> studentData;
+    private String CSVName;
 
-    public CSVReader(String source) {
+    public CSVReader(String source, String CSVName) {
         studentData = new ArrayList<StudentData>();
         this.source = source;
+        this.CSVName = CSVName;
     }
 
     public boolean readCSV() {
 
         try {
 
-            FileReader csvFile = new FileReader(source + "/Sample 3 CSV.csv");
+            FileReader csvFile = new FileReader(source + File.separator + CSVName);
             Scanner scanner = new Scanner(csvFile);
             scanner.useDelimiter(",");
 
@@ -66,28 +69,6 @@ public class CSVReader {
 
     public ArrayList<StudentData> getStudentData() {
         return studentData;
-    }
-
-    public void printStudentData() {
-
-        for (StudentData s : studentData) {
-
-            System.out.print(s.getIdentifier() + "\t");
-            System.out.print(s.getFullName() + "\t");
-            System.out.print(s.getIDNumber() + "\t");
-            System.out.print(s.getEmail() + "\t");
-            System.out.print(s.getStatus() + "\t");
-            System.out.print(s.getGrade() + "\t");
-            System.out.print(s.getMaximumGrade() + "\t");
-            System.out.print(s.getChangeStatus() + "\t");
-
-            System.out.print(s.getLastModified() + "\t");
-
-            if (s.getFeedback().equals(""))
-                System.out.println("No comments");
-            else
-                System.out.println(s.getFeedback());
-        }
     }
 
 }

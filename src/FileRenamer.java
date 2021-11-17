@@ -4,13 +4,16 @@ import java.util.regex.Pattern;
 
 public class FileRenamer {
 
-    String destination;
-    StudentDataCollection studentDataCollection;
-    Iterator iterator;
+    private String destination;
+    private StudentDataCollection studentDataCollection;
+    private Iterator iterator;
+    private ArrayList<String> fileNames;
+    private RenamingStrategy strategy;
 
-    public FileRenamer(String destination, ArrayList<StudentData> studentData) {
+    public FileRenamer(String destination, ArrayList<StudentData> studentData, ArrayList<String> fileNames) {
         studentDataCollection = new StudentDataCollection(studentData);
         this.destination = destination;
+        this.fileNames = fileNames;
         iterator = studentDataCollection.createIterator();
     }
 
@@ -19,14 +22,11 @@ public class FileRenamer {
         int count = 0;
 
         try {
-
-            ArrayList<String> fileNames = getFileNames();
-
             for (String originalFileName : fileNames) {
 
                 boolean renamed = false;
 
-                File fileToRename = new File(destination + "/" + originalFileName);
+                File fileToRename = new File(destination + File.separator + originalFileName);
 
                 while (iterator.hasNext()) {
 
@@ -47,11 +47,8 @@ public class FileRenamer {
                         }
 
                         String fileNameType = verifyFileNameType(originalFileName, student);
-
                         String newFileName = renameFile(originalFileName, student, fileNameType);
-
-                        File renameFile = new File(destination + "/" + newFileName);
-
+                        File renameFile = new File(destination + File.separator + newFileName);
                         boolean flag = fileToRename.renameTo(renameFile);
 
                         if (flag == false)
@@ -62,18 +59,15 @@ public class FileRenamer {
                             renamed = true;
                             count++;
                         }
-
                         iterator.reset();
                         break;
                     }
-
                 }
                 if (!renamed)
                     System.out.println("Error renaming " + originalFileName + "\n");
 
                 iterator.reset();
             }
-
         } catch (Exception e) {
             System.out.println(e);
             System.out.println("Error renaming files.");
@@ -81,32 +75,13 @@ public class FileRenamer {
         return count;
     }
 
-    private ArrayList<String> getFileNames() {
-
-        ArrayList<String> fileNames = new ArrayList<String>();
-
-        try {
-            File[] files = new File(destination).listFiles();
-
-            for (File file : files) {
-
-                if (file.isFile()) {
-                    fileNames.add(file.getName());
-                }
-            }
-        }
-
-        catch (Exception e) {
-            System.out.println("Destination path error");
-        }
-
-        return fileNames;
+    public void setStrategy(RenamingStrategy strategy) {
+        this.strategy = strategy;
     }
 
     private boolean checkFileForFullName(String fileName, StudentData student) {
 
         String temp1 = fileName.trim().replaceAll(" ", "");
-
         String name = student.getFullName();
         String temp2 = name.trim().replaceAll(" ", "");
         temp2 = temp2.trim().replaceAll("_", "");
@@ -141,43 +116,17 @@ public class FileRenamer {
             return "hard";
     }
 
-    private String getOriginalSubmissionName(String fileName, StudentData student, String fileNameType) {
-
-        if (fileNameType.equals("medium")) {
-
-            String fileNameParts[] = fileName.split("_");
-            String originalSubmission = "";
-            int i;
-            int arraySize = fileNameParts.length;
-
-            for (i = 0; i < arraySize; i++) {
-                if (fileNameParts[i].equals(student.getIdentifier())) {
-                    i++;
-                    while (i < arraySize) {
-                        originalSubmission += fileNameParts[i];
-                        i++;
-                        if (i != arraySize)
-                            originalSubmission += "_";
-                    }
-                    return originalSubmission;
-                }
-            }
-            return "No submission name";
-        }
-
-        else if (fileNameType.equals("hard"))
-            return fileName;
-
-        return "No submission name";
-    }
-
     private String renameFile(String fileName, StudentData student, String fileNameType) {
+
         String newFileName = "";
-        newFileName += student.getFullName() + "_";
-        newFileName += student.getIdentifier() + "_";
-        newFileName += "assignsubmission_file_";
-        String originalSubmissionName = getOriginalSubmissionName(fileName, student, fileNameType);
-        newFileName += originalSubmissionName;
+
+        if (fileNameType.equals("medium"))
+            setStrategy(new MediumRenamingStrategy());
+
+        if (fileNameType.equals("hard"))
+            setStrategy(new HardRenamingStrategy());
+
+        newFileName = strategy.renameFile(fileName, student);
 
         return newFileName;
 
