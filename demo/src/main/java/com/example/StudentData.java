@@ -1,4 +1,4 @@
-package com.comp36062021group14;
+package com.example;
 public class StudentData {
 
     private String identifier;
@@ -11,12 +11,6 @@ public class StudentData {
     private String changeStatus;
     private String lastModified;
     private String feedback;
-
-    public StudentData(){}
-    public StudentData(int ID, String Name){
-        setIDNumber(Integer.toString(ID));
-        setFullName(Name);
-    }
 
     public String getIdentifier() {
         return identifier;

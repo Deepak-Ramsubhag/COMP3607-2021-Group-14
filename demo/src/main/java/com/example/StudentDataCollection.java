@@ -1,4 +1,4 @@
-package com.comp36062021group14;
+package com.example;
 import java.util.ArrayList;
 
 public class StudentDataCollection implements Aggregate {

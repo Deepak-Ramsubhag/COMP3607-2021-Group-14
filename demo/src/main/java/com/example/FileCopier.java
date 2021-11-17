@@ -1,4 +1,4 @@
-package com.comp36062021group14;
+package com.example;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,8 +14,7 @@ public class FileCopier {
     private String destination;
     private FileFilter filter;
 
-    public FileCopier(String source, String destination){
-        
+    public FileCopier(String source, String destination) {
         this.destination = destination;
         this.source = source;
         filter = new FileFilter() {
@@ -24,33 +23,31 @@ public class FileCopier {
             public boolean accept(File file) {
                 if (file.getName().endsWith(".pdf")) {
                     return true;
-                 }
-                 return false;
+                }
+                return false;
             }
-            
+
         };
     }
 
-    public void copier () throws IOException{
-        Path src  = Paths.get(source);
+    public void copyFiles() throws IOException {
+        Path src = Paths.get(source);
         Path dest = Paths.get(destination);
 
-        Stream<Path> files = Files.walk(src,1);
-
-        
+        Stream<Path> files = Files.walk(src, 1);
 
         files.forEach(file -> {
+
             try {
-                if(filter.accept(file.toFile()))
-                Files.copy(file, dest.resolve(src.relativize(file)),
-                        StandardCopyOption.REPLACE_EXISTING);
-            }
-            catch (IOException e) {
+                if (filter.accept(file.toFile())) {
+                    Files.copy(file, dest.resolve(src.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
+                }
+
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         files.close();
+        return;
     }
 }
-    
-

@@ -1,4 +1,4 @@
-package com.comp36062021group14;
+package com.example;
 public interface Aggregate {
 
     public Iterator createIterator();
