@@ -15,6 +15,7 @@ public class FileCopier {
     private FileFilter filter;
 
     public FileCopier(String source, String destination){
+        
         this.destination = destination;
         this.source = source;
         filter = new FileFilter() {

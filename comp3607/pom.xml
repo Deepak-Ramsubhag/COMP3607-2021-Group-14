@@ -81,7 +81,7 @@
         </configuration>
         <executions>
           <execution>
-            <?m2e execute onConfiguration,onIncremental?>
+            <?m2e ignore?>
             <id>checkstyle</id>
             <phase>validate</phase>
             <goals>

@@ -18,7 +18,7 @@ public class CSVReader {
 
         try {
 
-            FileReader csvFile = new FileReader(source + "/Sample 3 CSV.csv");
+            FileReader csvFile = new FileReader(source + "/Sample 5 CSV.csv");
             Scanner scanner = new Scanner(csvFile);
             scanner.useDelimiter(",");
 
