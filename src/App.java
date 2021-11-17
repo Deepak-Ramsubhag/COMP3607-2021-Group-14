@@ -3,20 +3,45 @@ import java.nio.file.*;
 public class App {
     public static void main(String[] args) throws Exception {
 
-        StudentDataGenerator sdg = new StudentDataGenerator();
-        sdg.generateList();
-
         Path currentActiveDirectory = Paths.get("").toAbsolutePath();
 
-        String destination = currentActiveDirectory.normalize().toString();
+        String source = currentActiveDirectory.normalize().toString();
 
-        destination = destination.replace("\\", "/");
+        source = source.replace("\\", "/");
 
-        destination += "/RenamedFiles";
+        source += "/filesToRename";
 
-        FileRenamer fileRenamer = new FileRenamer(destination, sdg.getStudentData());
+        String destination = source + "/renamedFiles";
 
-        fileRenamer.renameFiles();
+        CSVReader csvReader = new CSVReader(source);
+        csvReader.readCSV();
+
+        FolderHandler folderHandler = new FolderHandler(source, destination);
+
+        FileCopier fileCopier = new FileCopier(source, destination);
+
+        FileRenamer fileRenamer = new FileRenamer(destination, csvReader.getStudentData());
+
+        MissingSubmissions missingSubmissions = new MissingSubmissions(destination, csvReader.getStudentData());
+
+        if (folderHandler.checkEmptyFolder(source))
+            return;
+
+        else {
+            if (!folderHandler.createDestinationFolder())
+                return;
+
+            else {
+                fileCopier.copyFiles();
+                System.out.println(fileRenamer.renameFiles() + " files renamed.");
+            }
+        }
+
+        int numMissingSubmissions = missingSubmissions.writeToCSV();
+
+        System.out.println("Number of missing submissions: " + numMissingSubmissions);
+
+        return;
 
     }
 }
