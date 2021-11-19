@@ -41,8 +41,8 @@ public class MissingSubmissions {
                 builder.append("Participant " + student.getIdentifier() + "," + student.getFullName() + ",");
                 builder.append(student.getIDNumber() + "," + student.getEmail() + ",");
                 builder.append(student.getStatus() + "," + student.getGrade() + ",");
-                builder.append(student.getMaximumGrade() + "," + student.getChangeStatus() + ",");
-                builder.append(student.getLastModified() + "," + student.getFeedback() + "\n");
+                builder.append(student.getMaxGrade() + "," + student.getChangeGrade() + ",");
+                builder.append(student.getDateLastModified() + "," + student.getFeedback() + "\n");
                 numMissingSubmissions++;
             }
             found = false;
