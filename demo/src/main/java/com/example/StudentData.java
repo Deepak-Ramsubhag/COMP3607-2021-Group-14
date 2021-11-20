@@ -7,89 +7,82 @@ public class StudentData {
     private String email;
     private String status;
     private String grade;
-    private String maximumGrade;
-    private String changeStatus;
-    private String lastModified;
+    private String maxGrade;
+    private String changeGrade;
+    private String dateLastModified;
     private String feedback;
+
+    public StudentData(String line) {
+        setData(line);
+    }
+
+    private boolean setData(String line) {
+
+        try {
+
+            String[] lineData = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+            this.identifier = lineData[0].substring(12);
+            this.fullName = lineData[1];
+            this.IDNumber = lineData[2];
+            this.email = lineData[3];
+            this.status = lineData[4];
+            this.grade = lineData[5];
+            this.maxGrade = lineData[6];
+            this.changeGrade = lineData[7];
+            this.dateLastModified = lineData[8];
+
+            if (!line.substring(line.length() - 1).equals(","))
+                this.feedback = lineData[9];
+            else
+                this.feedback = "";
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public String getIdentifier() {
         return identifier;
-    }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
 
     public String getFullName() {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
     public String getIDNumber() {
         return IDNumber;
-    }
-
-    public void setIDNumber(String iDNumber) {
-        IDNumber = iDNumber;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getGrade() {
         return grade;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
+    public String getMaxGrade() {
+        return maxGrade;
     }
 
-    public String getMaximumGrade() {
-        return maximumGrade;
+    public String getChangeGrade() {
+        return changeGrade;
     }
 
-    public void setMaximumGrade(String maximumGrade) {
-        this.maximumGrade = maximumGrade;
-    }
-
-    public String getChangeStatus() {
-        return changeStatus;
-    }
-
-    public void setChangeStatus(String changeStatus) {
-        this.changeStatus = changeStatus;
-    }
-
-    public String getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(String lastModified) {
-        this.lastModified = lastModified;
+    public String getDateLastModified() {
+        return dateLastModified;
     }
 
     public String getFeedback() {
         return feedback;
-    }
-
-    public void setFeedback(String feedback) {
-        this.feedback = feedback;
     }
 
 }

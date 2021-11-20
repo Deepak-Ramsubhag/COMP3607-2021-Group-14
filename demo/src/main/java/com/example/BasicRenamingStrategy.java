@@ -1,5 +1,5 @@
 package com.example;
-public class MediumRenamingStrategy implements RenamingStrategy {
+public class BasicRenamingStrategy implements RenamingStrategy {
 
     public String renameFile(String fileName, StudentData student) {
         String newFileName = "";
@@ -32,6 +32,5 @@ public class MediumRenamingStrategy implements RenamingStrategy {
             }
         }
         return "No submission name";
-
     }
 }

@@ -38,6 +38,11 @@ public class FolderHandler {
         if (directory.exists()) {
             System.out.println("Destination folder already exists.\n");
 
+            if (numFilesInFolder(destination) == 0)
+                return true;
+
+            else
+                System.out.println("Destination folder \n");
             return false;
         }
 
@@ -49,10 +54,9 @@ public class FolderHandler {
                 return true;
             }
 
-            else {
-                System.out.println("Destination folder not successfully created.");
+            else
                 return false;
-            }
+
         }
     }
 
@@ -78,9 +82,9 @@ public class FolderHandler {
         return fileNames;
     }
 
-    public String getCSVName() {
+    public String getCSVName(String location) {
 
-        ArrayList<String> fileNames = getFileNames(source);
+        ArrayList<String> fileNames = getFileNames(location);
         ArrayList<String> CSVs = new ArrayList<String>();
 
         for (String filename : fileNames) {

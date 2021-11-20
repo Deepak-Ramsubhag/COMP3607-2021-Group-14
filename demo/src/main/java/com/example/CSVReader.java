@@ -1,75 +1,46 @@
 package com.example;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class CSVReader {
 
     private String source;
-    private ArrayList<StudentData> studentData;
     private String CSVName;
+    private ArrayList<StudentData> studentData;
 
     public CSVReader(String source, String CSVName) {
-        studentData = new ArrayList<StudentData>();
         this.source = source;
         this.CSVName = CSVName;
+        studentData = new ArrayList<StudentData>();
     }
 
     public boolean readCSV() {
-
+        String path = source + File.separator + CSVName;
+        BufferedReader br;
         try {
+            br = new BufferedReader(new FileReader(path));
+            String line = " ";
+            line = br.readLine();
 
-            FileReader csvFile = new FileReader(source + File.separator + CSVName);
-            Scanner scanner = new Scanner(csvFile);
-            scanner.useDelimiter(",");
+            while ((line = br.readLine()) != null) {
 
-            scanner.nextLine();
-
-            while (scanner.hasNext()) {
-
-                StudentData student = new StudentData();
-
-                String identifier = scanner.next();
-                identifier = identifier.substring(12);
-                student.setIdentifier(identifier);
-                student.setFullName(scanner.next());
-                student.setIDNumber(scanner.next());
-                student.setEmail(scanner.next());
-                student.setStatus(scanner.next());
-                student.setGrade(scanner.next());
-                student.setMaximumGrade(scanner.next());
-                student.setChangeStatus(scanner.next());
-
-                String str = scanner.next();
-                if (str.startsWith("\""))
-                    str += "," + scanner.next() + "," + scanner.next();
-
-                student.setLastModified(str);
-
-                str = scanner.nextLine();
-                if (str.equals(","))
-                    student.setFeedback("");
-
-                else {
-                    str = str.substring(1);
-                    student.setFeedback(str);
-                }
-                studentData.add(student);
+                StudentData sd = new StudentData(line);
+                studentData.add(sd);
             }
-            scanner.close();
-            return true;
-        }
 
-        catch (IOException e) {
-            System.out.println(e);
-            return false;
+            br.close();
+            return true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     public ArrayList<StudentData> getStudentData() {
         return studentData;
     }
-
 }
