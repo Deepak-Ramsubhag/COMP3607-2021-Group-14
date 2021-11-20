@@ -1,6 +1,8 @@
 import java.io.File;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileFixer {
     public static void main(String[] args) throws Exception {
@@ -13,9 +15,9 @@ public class FileFixer {
 
         String destination = source + File.separator + "renamedFiles";
 
-        FolderHandler folderHandler = new FolderHandler(source, destination);
+        System.out.println(currentActiveDirectory.getFileName());
 
-        FileCopier fileCopier = new FileCopier(source, destination);
+        FolderHandler folderHandler = new FolderHandler(source, destination);
 
         if (folderHandler.numFilesInFolder(source) <= 0) {
             System.out.println("No files found. Exiting . . .\n");
@@ -35,11 +37,18 @@ public class FileFixer {
 
             if (!zf.equals("No zipped folders")) {
                 String zippedFolderPath = source + File.separator + zf;
-                Unzip unzipper = new Unzip();
+                UnzipFiles unzipper = new UnzipFiles();
+
                 unzipper.unzip(zippedFolderPath, source);
+
+                String folderName = zf.substring(0, zf.length() - 4);
+
+                source += File.separator + folderName;
             }
 
-            String CSVName = folderHandler.getCSVName();
+            FileCopier fileCopier = new FileCopier(source, destination);
+
+            String CSVName = folderHandler.getCSVName(source);
 
             if (CSVName.equals("No CSVs") || CSVName.equals("Multiple CSVs")) {
                 System.out.println(CSVName + " found.\nExiting. . .\n");
@@ -70,8 +79,8 @@ public class FileFixer {
             System.out.println("Number of missing submissions: " + numMissingSubmissions);
 
         }
+
         return;
 
     }
-
 }

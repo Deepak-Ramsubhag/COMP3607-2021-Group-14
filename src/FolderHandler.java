@@ -77,9 +77,9 @@ public class FolderHandler {
         return fileNames;
     }
 
-    public String getCSVName() {
+    public String getCSVName(String location) {
 
-        ArrayList<String> fileNames = getFileNames(source);
+        ArrayList<String> fileNames = getFileNames(location);
         ArrayList<String> CSVs = new ArrayList<String>();
 
         for (String filename : fileNames) {
